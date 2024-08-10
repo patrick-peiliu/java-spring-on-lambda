@@ -14,7 +14,7 @@ public class ProductApiApplication {
 
     public static void main(String[] args) {
         LOG.info("Application startup");
-
+        LOG.info("AWS Lambda Handler");
         SpringApplication.run(ProductApiApplication.class, args);
     }
 
