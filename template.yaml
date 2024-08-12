@@ -37,12 +37,12 @@ Resources:
       AutoPublishAlias: production
       SnapStart:
         ApplyOn: PublishedVersions
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref SecurityGroupId
-        SubnetIds:
-          - !Ref Subnet1Id
-          - !Ref Subnet2Id
+#      VpcConfig:
+#        SecurityGroupIds:
+#          - !Ref SecurityGroupId
+#        SubnetIds:
+#          - !Ref Subnet1Id
+#          - !Ref Subnet2Id
       Architectures:
         - x86_64
       MemorySize: 2048
