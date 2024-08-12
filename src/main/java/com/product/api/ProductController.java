@@ -45,4 +45,13 @@ public class ProductController {
 
         return ResponseEntity.ok(product);
     }
+
+    @GetMapping("/product/1688")
+    ResponseEntity<String> getString() {
+//        var product = productService.GetProduct(id);
+        String a = "Epic";
+        LOG.info("Product listing successful");
+
+        return ResponseEntity.ok(a);
+    }
 }

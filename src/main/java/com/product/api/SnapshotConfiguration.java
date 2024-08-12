@@ -5,23 +5,20 @@ import org.apache.logging.log4j.Logger;
 import org.crac.Context;
 import org.crac.Core;
 import org.crac.Resource;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 
 @Configuration
+@ConditionalOnProperty(name = "spring.profiles.active", havingValue = "aws")
 public class SnapshotConfiguration implements Resource {
     private static final Logger LOG = LogManager.getLogger();
     LocalContainerEntityManagerFactoryBean _dataSourceBean;
 
-    public SnapshotConfiguration(LocalContainerEntityManagerFactoryBean dataSourceBean)
-    {
+    public SnapshotConfiguration(LocalContainerEntityManagerFactoryBean dataSourceBean) {
         LOG.info("Snapshot config constructor");
 
         Core.getGlobalContext().register(SnapshotConfiguration.this);
@@ -35,8 +32,7 @@ public class SnapshotConfiguration implements Resource {
         DataSource dataSource = _dataSourceBean.getDataSource();
         Connection databaseConnection = dataSource.getConnection();
 
-        if (!databaseConnection.isClosed())
-        {
+        if (!databaseConnection.isClosed()) {
             LOG.info("Closing connection");
             databaseConnection.close();
         }

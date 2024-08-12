@@ -14,6 +14,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -21,10 +24,12 @@ import javax.sql.DataSource;
 @Configuration
 public class JpaConfiguration {
     private final Gson gson = new Gson();
-    public JpaConfiguration()
-    {
+
+    public JpaConfiguration() {
     }
 
+    @Bean
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "aws")
     public DataSource dataSource() {
         final AwsSecret dbCredentials = getSecret();
 
@@ -50,8 +55,7 @@ public class JpaConfiguration {
 
         try {
             result = secretsManagerClient.getSecretValue(getSecretValueRequest);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw e;
         }
         if (result.secretString() != null) {
@@ -63,11 +67,13 @@ public class JpaConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "aws")
     public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
 
     @Bean
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "aws")
     public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
         jpaVendorAdapter.setDatabase(Database.POSTGRESQL);
@@ -77,6 +83,7 @@ public class JpaConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "aws")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean lemfb = new LocalContainerEntityManagerFactoryBean();
         lemfb.setDataSource(dataSource());
