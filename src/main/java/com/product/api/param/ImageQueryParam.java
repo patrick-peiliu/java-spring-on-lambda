@@ -1,6 +1,7 @@
 package com.product.api.param;
 
-public class ProductSearchParam {
+public class ImageQueryParam {
+    private String imageId;
     private String keyword;
     private Integer beginPage;
     private Integer pageSize;
@@ -11,8 +12,12 @@ public class ProductSearchParam {
     private Long categoryId;
     private String country;
 
-    public Integer getPageSize() {
-        return pageSize;
+    public String getFilter() {
+        return filter;
+    }
+
+    public String getImageId() {
+        return imageId;
     }
 
     public String getKeyword() {
@@ -23,8 +28,8 @@ public class ProductSearchParam {
         return beginPage;
     }
 
-    public String getFilter() {
-        return filter;
+    public Integer getPageSize() {
+        return pageSize;
     }
 
     public String getSort() {
@@ -46,5 +51,4 @@ public class ProductSearchParam {
     public String getCountry() {
         return country;
     }
-
 }
