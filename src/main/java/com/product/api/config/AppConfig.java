@@ -12,12 +12,6 @@ public class AppConfig {
     @Value("${api.appKey}")
     private String clientId;
 
-    @Value("${api.secKey}")
-    private String appSecret;
-
-    @Value("${api.refreshToken}")
-    private String refreshToken;
-
     @Value("${app.redirectUri}")
     private String redirectUri;
 
@@ -29,15 +23,7 @@ public class AppConfig {
         return clientId;
     }
 
-    public String getAppSecret() {
-        return appSecret;
-    }
-
     public String getRedirectUri() {
         return redirectUri;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
     }
 }
