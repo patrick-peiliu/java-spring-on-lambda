@@ -1,5 +1,6 @@
 package com.product.api.config;
 
+import com.product.api.util.SecretsManager;
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.AWSXRayRecorder;
 import com.amazonaws.xray.entities.Segment;
@@ -21,8 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 @Configuration
 public class AwsSecretsManagerConfig {
     private static final Logger LOG = LogManager.getLogger();
@@ -43,7 +42,7 @@ public class AwsSecretsManagerConfig {
     }
 
     @Bean
-    public Map<String, String> secretsManagerConfig(SecretsManagerClient secretsManagerClient, @Value("${aws.secretName}") String secretName) {
+    public SecretsManager secretsManager(SecretsManagerClient secretsManagerClient, @Value("${aws.secretName}") String secretName) {
         AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
         Segment segment = xrayRecorder.beginSegment("GetSecretSegment");
         String secret = "";
@@ -60,8 +59,6 @@ public class AwsSecretsManagerConfig {
                 getSecretValueResponse = secretsManagerClient.getSecretValue(getSecretValueRequest);
                 subsegment.close();
             } catch (Exception e) {
-                // For a list of exceptions thrown, see
-                // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
                 throw e;
             }
 
@@ -71,11 +68,12 @@ public class AwsSecretsManagerConfig {
             segment.close();
         }
         try {
-            // Assuming the secret is stored as a JSON string
-            return new ObjectMapper().readValue(secret, new TypeReference<Map<String, String>>() {});
+            LOG.info("setting the secretsMap: {}", secret);
+            Map<String, String> secretsMap = new ObjectMapper().readValue(secret, new TypeReference<Map<String, String>>() {});
+            return new SecretsManager(secretsMap);
         } catch (IOException e) {
             e.printStackTrace();
-            return new HashMap<>();
+            return new SecretsManager(new HashMap<>());
         }
     }
 }
