@@ -6,6 +6,7 @@ import com.amazonaws.xray.entities.Segment;
 import com.amazonaws.xray.entities.Subsegment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -24,7 +25,6 @@ import java.util.Map;
 
 @Configuration
 public class AwsSecretsManagerConfig {
-    private String secretName = "/secret/epicsourcing";
     private static final Logger LOG = LogManager.getLogger();
     private Region region = Region.US_EAST_2;
 
@@ -43,7 +43,7 @@ public class AwsSecretsManagerConfig {
     }
 
     @Bean
-    public Map<String, String> appSecrets(SecretsManagerClient secretsManagerClient) {
+    public Map<String, String> secretsManagerConfig(SecretsManagerClient secretsManagerClient, @Value("${aws.secretName}") String secretName) {
         AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
         Segment segment = xrayRecorder.beginSegment("GetSecretSegment");
         String secret = "";
