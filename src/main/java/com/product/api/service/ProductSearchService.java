@@ -6,6 +6,7 @@ import com.alibaba.ocean.rawsdk.client.entity.AuthorizationToken;
 import com.alibaba.ocean.rawsdk.common.SDKResult;
 import com.product.api.auth.AuthService;
 import com.product.api.config.AppConfig;
+import com.product.api.factory.ApiRequestFactory;
 import com.product.api.param.ImageQueryParam;
 import com.product.api.param.ProductDetailParam;
 import com.product.api.param.ProductSearchParam;
@@ -26,14 +27,70 @@ public class ProductSearchService {
     private final ApiExecutor apiExecutor;
     private final SecretsManager secretsManager;
     private final AppConfig appConfig;
+    private final ApiRequestFactory apiRequestFactory;
     private String accessToken;
 
-    public ProductSearchService(ApiExecutor apiExecutor, SecretsManager secretsManager, AppConfig appConfig) {
+    public ProductSearchService(ApiExecutor apiExecutor, SecretsManager secretsManager,
+                                AppConfig appConfig, ApiRequestFactory apiRequestFactory) {
         this.apiExecutor = apiExecutor;
         this.secretsManager = secretsManager;
         this.appConfig = appConfig;
+        this.apiRequestFactory = apiRequestFactory;
         this.accessToken = secretsManager.getSecret("AccessToken");
     }
+
+    public ProductSearchKeywordQueryResult searchProductsByKeyword(ProductSearchParam productSearchParam) {
+        ProductSearchKeywordQueryParam param = apiRequestFactory.createKeywordQueryParam(productSearchParam);
+        ProductSearchKeywordQueryResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.keywordQuery-1");
+
+        if (result != null && result.getResult().getSuccess()) {
+            return result;
+        } else {
+            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
+        }
+    }
+
+    public ProductSearchQueryProductDetailResult queryProductDetail(ProductDetailParam productDetailParam) {
+        ProductSearchQueryProductDetailParam param = apiRequestFactory.createProductDetailParam(productDetailParam);
+        ProductSearchQueryProductDetailResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.queryProductDetail-1");
+
+        if (result != null && result.getResult().getSuccess()) {
+            return result;
+        } else {
+            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
+        }
+    }
+
+    public ProductImageUploadResult productImageUpload(MultipartFile imageFile) {
+        String base64Image;
+        try {
+            byte[] imageBytes = imageFile.getBytes();
+            base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to convert image file to base64", e);
+        }
+
+        ProductImageUploadParam param = apiRequestFactory.createImageUploadParam(base64Image);
+        ProductImageUploadResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.image.upload-1");
+
+        if (result != null && Boolean.TRUE.toString().equals(result.getResult().getSuccess())) {
+            return result;
+        } else {
+            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
+        }
+    }
+
+    public ProductSearchImageQueryResult imageQuery(ImageQueryParam imageQueryParam) {
+        ProductSearchImageQueryParam param = apiRequestFactory.createImageQueryParam(imageQueryParam);
+        ProductSearchImageQueryResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.imageQuery-1");
+
+        if (result != null && Boolean.TRUE.toString().equals(result.getResult().getSuccess())) {
+            return result;
+        } else {
+            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
+        }
+    }
+
 
     private String getAccessToken() {
         String accessToken = AuthService.getAccessToken(
@@ -54,6 +111,7 @@ public class ProductSearchService {
         return token.getAccess_token();
     }
 
+
     private <T> T executeWithRetry(Callable<SDKResult<T>> apiCall, String requestUrl) {
         try {
             SDKResult<T> result = apiCall.call();
@@ -67,81 +125,6 @@ public class ProductSearchService {
         } catch (Exception e) {
             LOG.error("API call failed for URL: {} with error: {}", requestUrl, e.getMessage());
             throw new RuntimeException("API call failed: " + e.getMessage(), e);
-        }
-    }
-
-    public ProductSearchKeywordQueryResult searchProductsByKeyword(ProductSearchParam productSearchParam) {
-        ProductSearchKeywordQueryParam param = new ProductSearchKeywordQueryParam();
-        ProductSearchKeywordQueryParamOfferQueryParam offerQueryParam = new ProductSearchKeywordQueryParamOfferQueryParam();
-        offerQueryParam.setKeyword(productSearchParam.getKeyword());
-        offerQueryParam.setBeginPage(productSearchParam.getBeginPage());
-        offerQueryParam.setPageSize(productSearchParam.getPageSize());
-        offerQueryParam.setCountry(productSearchParam.getCountry());
-        param.setOfferQueryParam(offerQueryParam);
-
-        ProductSearchKeywordQueryResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.keywordQuery-1");
-
-        if (result != null && result.getResult().getSuccess()) {
-            return result;
-        } else {
-            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
-        }
-    }
-
-    public ProductSearchQueryProductDetailResult queryProductDetail(ProductDetailParam productDetailParam) {
-        ProductSearchQueryProductDetailParam param = new ProductSearchQueryProductDetailParam();
-        ProductSearchQueryProductDetailParamOfferDetailParam detailParam = new ProductSearchQueryProductDetailParamOfferDetailParam();
-        detailParam.setCountry(productDetailParam.getCountry());
-        detailParam.setOfferId(productDetailParam.getOfferId());
-        param.setOfferDetailParam(detailParam);
-
-        ProductSearchQueryProductDetailResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.queryProductDetail-1");
-
-        if (result != null && result.getResult().getSuccess()) {
-            return result;
-        } else {
-            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
-        }
-    }
-
-    public ProductImageUploadResult productImageUpload(MultipartFile imageFile) {
-        String base64Image;
-        try {
-            byte[] imageBytes = imageFile.getBytes();
-            base64Image = Base64.getEncoder().encodeToString(imageBytes);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to convert image file to base64", e);
-        }
-
-        ProductImageUploadParam param = new ProductImageUploadParam();
-        ProductImageUploadParamUploadImageParam imageParam = new ProductImageUploadParamUploadImageParam();
-        imageParam.setImageBase64(base64Image);
-        param.setUploadImageParam(imageParam);
-
-        ProductImageUploadResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.image.upload-1");
-
-        if (result != null && Boolean.TRUE.toString().equals(result.getResult().getSuccess())) {
-            return result;
-        } else {
-            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
-        }
-    }
-
-    public ProductSearchImageQueryResult imageQuery(ImageQueryParam imageQueryParam) {
-        ProductSearchImageQueryParam param = new ProductSearchImageQueryParam();
-        ProductSearchImageQueryParamOfferQueryParam offerQueryParam = new ProductSearchImageQueryParamOfferQueryParam();
-        offerQueryParam.setImageId(imageQueryParam.getImageId());
-        offerQueryParam.setCountry(imageQueryParam.getCountry());
-        offerQueryParam.setBeginPage(imageQueryParam.getBeginPage());
-        offerQueryParam.setPageSize(imageQueryParam.getPageSize());
-        param.setOfferQueryParam(offerQueryParam);
-
-        ProductSearchImageQueryResult result = executeWithRetry(() -> apiExecutor.execute(param, accessToken), "product.search.imageQuery-1");
-
-        if (result != null && Boolean.TRUE.toString().equals(result.getResult().getSuccess())) {
-            return result;
-        } else {
-            throw new RuntimeException("API call failed: " + (result != null ? result.getResult().getMessage() : "Unknown error"));
         }
     }
 }
