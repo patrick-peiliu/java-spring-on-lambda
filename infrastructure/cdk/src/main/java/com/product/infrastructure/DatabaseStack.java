@@ -11,7 +11,7 @@ import software.constructs.Construct;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Component
+//@Component
 //@Profile("local")
 public class DatabaseStack extends Construct{
 //    public DatabaseStack(final Construct construct, final String id, DatabaseStackProps stackProps){

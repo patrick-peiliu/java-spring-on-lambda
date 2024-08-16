@@ -25,7 +25,7 @@ import java.util.Map;
 @Configuration
 public class AwsSecretsManagerConfig {
     private static final Logger LOG = LogManager.getLogger();
-    private Region region = Region.US_EAST_2;
+    private Region region = Region.US_EAST_1;
 
     @Bean
     public SecretsManagerClient secretsManagerClient() {
@@ -44,7 +44,10 @@ public class AwsSecretsManagerConfig {
     @Bean
     public SecretsManager secretsManager(SecretsManagerClient secretsManagerClient, @Value("${aws.secretName}") String secretName) {
         AWSXRayRecorder xrayRecorder = AWSXRay.getGlobalRecorder();
-        Segment segment = xrayRecorder.beginSegment("GetSecretSegment");
+        Segment segment = null;
+        if (!isLambdaEnvironment()) {
+            segment = xrayRecorder.beginSegment("GetSecretSegment");
+        }
         String secret = "";
 
         try {
@@ -57,23 +60,32 @@ public class AwsSecretsManagerConfig {
             try {
                 Subsegment subsegment = xrayRecorder.beginSubsegment("SecretsManager");
                 getSecretValueResponse = secretsManagerClient.getSecretValue(getSecretValueRequest);
+                subsegment.putAnnotation("SecretRetrieved", true);
                 subsegment.close();
             } catch (Exception e) {
+                LOG.error("Error retrieving secret: {}", e.getMessage());
                 throw e;
             }
 
             secret = getSecretValueResponse.secretString();
             LOG.info("aws secret is: {}", secret);
         } finally {
-            segment.close();
+            if (segment != null) {
+                segment.close();
+            }
         }
+
         try {
             LOG.info("setting the secretsMap: {}", secret);
             Map<String, String> secretsMap = new ObjectMapper().readValue(secret, new TypeReference<Map<String, String>>() {});
             return new SecretsManager(secretsMap);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error parsing secret: {}", e.getMessage());
             return new SecretsManager(new HashMap<>());
         }
+    }
+
+    private boolean isLambdaEnvironment() {
+        return System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null;
     }
 }

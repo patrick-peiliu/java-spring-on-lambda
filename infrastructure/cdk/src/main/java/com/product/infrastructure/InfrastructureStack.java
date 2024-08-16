@@ -13,18 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InfrastructureStack extends Stack {
-    public InfrastructureStack(final Construct scope, final String id) {
-        this(scope, id, null);
-    }
-
-    public InfrastructureStack(final Construct scope, final String id, final StackProps props) {
-        super(scope, id, props);
-
-        NetworkingStack networking = new NetworkingStack(this, "NetworkingStack");
-
-        DatabaseStack databaseStack = new DatabaseStack(this, "DatabaseStack", DatabaseStackProps.builder()
-                .withVpc(networking.getVpc())
-                .withApplicationSecurityGroup(networking.getApplicationSecurityGroup())
-                .build());
-    }
+//    public InfrastructureStack(final Construct scope, final String id) {
+//        this(scope, id, null);
+//    }
+//
+//    public InfrastructureStack(final Construct scope, final String id, final StackProps props) {
+//        super(scope, id, props);
+//
+//        NetworkingStack networking = new NetworkingStack(this, "NetworkingStack");
+//
+//        DatabaseStack databaseStack = new DatabaseStack(this, "DatabaseStack", DatabaseStackProps.builder()
+//                .withVpc(networking.getVpc())
+//                .withApplicationSecurityGroup(networking.getApplicationSecurityGroup())
+//                .build());
+//    }
 }
