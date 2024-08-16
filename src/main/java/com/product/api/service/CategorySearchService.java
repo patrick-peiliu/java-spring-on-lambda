@@ -41,6 +41,7 @@ public class CategorySearchService {
         return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken), param.getOceanApiId().getName(), this::refreshAccessToken);
     }
 
+    // todo error code 处理
     public CategoryTranslationGetByKeywordResult getCategoryByKeyword(CategorySearchParam categorySearchParam) {
         CategoryTranslationGetByKeywordParam param = apiRequestFactory.createCategorySearchParam(categorySearchParam);
         return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken), param.getOceanApiId().getName(), this::refreshAccessToken);

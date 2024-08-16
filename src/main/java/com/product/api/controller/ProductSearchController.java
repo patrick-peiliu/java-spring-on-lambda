@@ -60,4 +60,12 @@ public class ProductSearchController {
     public ProductSearchImageQueryResult imageQuery(@RequestBody ImageQueryParam param) {
         return productSearchService.imageQuery(param);
     }
+
+    /*
+     * 上传图片后图搜
+     * */
+    @PostMapping("/imageSearch")
+    public ProductSearchImageQueryResult uploadImageAndQuery(@RequestParam("imageFile") MultipartFile imageFile) {
+        return productSearchService.uploadImageAndQuery(imageFile);
+    }
 }

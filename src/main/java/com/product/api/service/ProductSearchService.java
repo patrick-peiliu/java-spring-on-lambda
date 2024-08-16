@@ -16,7 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import org.apache.commons.lang3.StringUtils;
 
+
+/**
+ * 商品搜索服务类
+ * This class is used to search for products.
+ */
 @Service
 public class ProductSearchService {
     private static final Logger LOG = LogManager.getLogger();
@@ -44,6 +50,8 @@ public class ProductSearchService {
         return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken) , param.getOceanApiId().getName(), this::refreshAccessToken);
     }
 
+    // 线上返回图片失败
+    // todo 压缩算法
     public ProductImageUploadResult productImageUpload(MultipartFile imageFile) {
         String base64Image;
         try {
@@ -55,6 +63,27 @@ public class ProductSearchService {
 
         ProductImageUploadParam param = apiRequestFactory.createImageUploadParam(base64Image);
         return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken), param.getOceanApiId().getName(), this::refreshAccessToken);
+    }
+
+    public ProductSearchImageQueryResult uploadImageAndQuery(MultipartFile imageFile) {
+        // Step 1: Upload the image and get the image ID
+        ProductImageUploadResultResultModel uploadResult = productImageUpload(imageFile).getResult();
+        ImageQueryParam imageQueryParam = new ImageQueryParam();
+        imageQueryParam.setBeginPage(1);
+        imageQueryParam.setPageSize(10);
+        imageQueryParam.setCountry("en");
+        String imageId = uploadResult.getResult();
+        // Step 2: Check if the image ID is valid
+        if (StringUtils.isNotEmpty(imageId) && !imageId.equals("0")) {
+            // Set the image ID to ImageQueryParam
+            imageQueryParam.setImageId(imageId);
+        } else {
+            // Throw an exception to inform the upload image fails
+            throw new RuntimeException("Image upload failed: Invalid image ID");
+        }
+
+        // Step 3: Query the image
+        return imageQuery(imageQueryParam);
     }
 
     public ProductSearchImageQueryResult imageQuery(ImageQueryParam imageQueryParam) {
