@@ -1,9 +1,7 @@
 package com.product.api.factory;
 
 import com.alibaba.fenxiao.crossborder.param.*;
-import com.product.api.param.ImageQueryParam;
-import com.product.api.param.ProductDetailParam;
-import com.product.api.param.ProductSearchParam;
+import com.product.api.param.*;
 
 public class ApiRequestFactory {
 
@@ -43,6 +41,34 @@ public class ApiRequestFactory {
         offerQueryParam.setBeginPage(imageQueryParam.getBeginPage());
         offerQueryParam.setPageSize(imageQueryParam.getPageSize());
         param.setOfferQueryParam(offerQueryParam);
+        return param;
+    }
+
+    public ProductSearchTopKeywordParam createTopKeywordParam(TopKeywordParam topKeywordParam) {
+        ProductSearchTopKeywordParam param = new ProductSearchTopKeywordParam();
+        AlibabaCbuOfferParamTopSeKeywordParam topSeKeywordParam = new AlibabaCbuOfferParamTopSeKeywordParam();
+        topSeKeywordParam.setCountry(topKeywordParam.getCountry());
+        topSeKeywordParam.setSourceId(topKeywordParam.getSourceId());
+        topSeKeywordParam.setHotKeywordType(topKeywordParam.getHotKeywordType());
+        param.setTopSeKeywordParam(topSeKeywordParam);
+        return param;
+    }
+
+    public ProductTopListQueryParam createRankQueryParam(RankQueryParam rankQueryParam) {
+        ProductTopListQueryParam param = new ProductTopListQueryParam();
+        ProductTopListQueryRankQueryParams rankQueryParams = new ProductTopListQueryRankQueryParams();
+        rankQueryParams.setRankId(rankQueryParam.getRankId());
+        rankQueryParams.setRankType(rankQueryParam.getRankType());
+        rankQueryParams.setLanguage(rankQueryParam.getLanguage());
+        rankQueryParams.setLimit(rankQueryParam.getLimit());
+        param.setRankQueryParams(rankQueryParams);
+        return param;
+    }
+
+    public CategoryTranslationGetByKeywordParam createCategorySearchParam(CategorySearchParam categorySearchParam) {
+        CategoryTranslationGetByKeywordParam param = new CategoryTranslationGetByKeywordParam();
+        param.setCateName(categorySearchParam.getCateName());
+        param.setLanguage(categorySearchParam.getLanguage());
         return param;
     }
 }
