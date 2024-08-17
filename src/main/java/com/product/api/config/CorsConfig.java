@@ -12,7 +12,9 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*"); // Allow all origins
+        corsConfiguration.addAllowedOriginPattern("http://127.0.0.1:5500"); // Allow specific test domain
+        corsConfiguration.addAllowedOriginPattern("*epicsourcing*"); // Allow any domain containing "epicsourcing"
+        corsConfiguration.addAllowedOriginPattern("*.webflow.io"); // Allow any test domain of Webflow
         corsConfiguration.addAllowedMethod("*"); // Allow all methods (GET, POST, etc.)
         corsConfiguration.addAllowedHeader("*"); // Allow all headers
         corsConfiguration.setAllowCredentials(true); // Allow credentials

@@ -57,8 +57,7 @@ public class ProductSearchService {
         try {
             byte[] imageBytes = imageFile.getBytes();
             base64Image = Base64.getEncoder().encodeToString(imageBytes);
-            // todo log debug
-            LOG.info("Base64 Image: {}", base64Image); // print the base64 image
+//            LOG.info("Base64 Image: {}", base64Image); // print the base64 image
             // Calculate the size of the base64 string in bytes
             int base64ImageSizeInBytes = base64Image.length();
 
