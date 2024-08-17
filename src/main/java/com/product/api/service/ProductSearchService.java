@@ -57,6 +57,16 @@ public class ProductSearchService {
         try {
             byte[] imageBytes = imageFile.getBytes();
             base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            // todo log debug
+            LOG.info("Base64 Image: {}", base64Image); // print the base64 image
+            // Calculate the size of the base64 string in bytes
+            int base64ImageSizeInBytes = base64Image.length();
+
+            // Convert the size to kilobytes (KB)
+            double base64ImageSizeInKB = base64ImageSizeInBytes / 1024.0;
+
+            // Log the size in KB
+            LOG.info("Base64 Image Size: {} KB", base64ImageSizeInKB);
         } catch (IOException e) {
             throw new RuntimeException("Failed to convert image file to base64", e);
         }
