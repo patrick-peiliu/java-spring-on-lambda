@@ -1,5 +1,6 @@
 package com.product.api.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.ocean.rawsdk.common.SDKResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,7 @@ public class RetryUtil {
         try {
             SDKResult<T> result = apiCall.call();
             LOG.info("API call success for URL: {}", requestUrl);
+            LOG.info("API call result: {}", JSONObject.toJSONString(result));
             if (result.getErrorCode() != null && result.getErrorCode().startsWith("4")) {
                 LOG.warn("4xx error code received, refreshing access token and retrying...");
                 refreshToken.run();
