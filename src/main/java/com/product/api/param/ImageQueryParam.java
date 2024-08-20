@@ -88,6 +88,11 @@ public class ImageQueryParam {
     private String priceEnd;
     private Long categoryId;
     private String country;
+    private String base64Image;
+
+    public String getBase64Image() {
+        return base64Image;
+    }
 
     public String getFilter() {
         return filter;
