@@ -21,28 +21,28 @@ public class CategorySearchController {
         this.categorySearchService = categorySearchService;
     }
 
-    /*
+    /**
      * 商品热搜词
      * com.alibaba.fenxiao.crossborder:product.search.topKeyword-1
-     * */
+     */
     @PostMapping("/topKeyword")
     public ProductSearchTopKeywordResult searchTopKeywords(@RequestBody TopKeywordParam param) {
         return categorySearchService.searchTopKeywords(param);
     }
 
-    /*
+    /**
      * 查询榜单列表
      * com.alibaba.fenxiao.crossborder:product.search.topKeyword-1
-     * */
+     */
     @PostMapping("/topList")
     public ProductTopListQueryResult queryTopList(@RequestBody RankQueryParam param) {
         return categorySearchService.queryTopList(param);
     }
 
-    /*
+    /**
     * 根据类目名称查询多语言类目
     * com.alibaba.fenxiao.crossborder:category.translation.getByKeyword-1
-     * */
+     */
     @PostMapping("/category/search")
     public CategoryTranslationGetByKeywordResult getCategoryByKeyword(@RequestBody CategorySearchParam param) {
         return categorySearchService.getCategoryByKeyword(param);

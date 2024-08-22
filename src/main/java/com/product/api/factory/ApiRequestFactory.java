@@ -71,4 +71,15 @@ public class ApiRequestFactory {
         param.setLanguage(categorySearchParam.getLanguage());
         return param;
     }
+
+    public ProductSearchOfferRecommendParam createProductRecommendParam(ProductRecommendParam productRecommendParam) {
+        ProductSearchOfferRecommendParam param = new ProductSearchOfferRecommendParam();
+        AlibabaCbuOfferParamRecommendOfferParam offerParam = new AlibabaCbuOfferParamRecommendOfferParam();
+        offerParam.setCountry(productRecommendParam.getCountry());
+        offerParam.setBeginPage(productRecommendParam.getBeginPage());
+        offerParam.setPageSize(productRecommendParam.getPageSize());
+        offerParam.setOutMemberId(productRecommendParam.getOutMemberId());
+        param.setRecommendOfferParam(offerParam);
+        return param;
+    }
 }

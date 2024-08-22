@@ -6,6 +6,7 @@ import com.alibaba.ocean.rawsdk.client.entity.AuthorizationToken;
 import com.product.api.factory.ApiRequestFactory;
 import com.product.api.param.ImageQueryParam;
 import com.product.api.param.ProductDetailParam;
+import com.product.api.param.ProductRecommendParam;
 import com.product.api.param.ProductSearchParam;
 import com.product.api.util.ImageCompressor;
 import com.product.api.util.RetryUtil;
@@ -52,6 +53,12 @@ public class ProductSearchService {
     public ProductSearchQueryProductDetailResult queryProductDetail(ProductDetailParam productDetailParam) {
         ProductSearchQueryProductDetailParam param = apiRequestFactory.createProductDetailParam(productDetailParam);
         return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken) , param.getOceanApiId().getName(), this::refreshAccessToken);
+    }
+
+    public ProductSearchOfferRecommendResult searchRecommendProduct(ProductRecommendParam productRecommendParam) {
+        productRecommendParam.setOutMemberId(secretsManager.getSecret("MemberId"));
+        ProductSearchOfferRecommendParam param = apiRequestFactory.createProductRecommendParam(productRecommendParam);
+        return RetryUtil.executeWithRetry(() -> apiExecutor.execute(param, accessToken), param.getOceanApiId().getName(), this::refreshAccessToken);
     }
 
     // 线上返回图片失败
