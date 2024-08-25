@@ -89,6 +89,7 @@ public class ImageQueryParam {
     private Long categoryId;
     private String country;
     private String base64Image;
+    private String imageAddress;
 
     public String getBase64Image() {
         return base64Image;
@@ -148,5 +149,9 @@ public class ImageQueryParam {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getImageAddress() {
+        return this.imageAddress;
     }
 }

@@ -2,6 +2,7 @@ package com.product.api.factory;
 
 import com.alibaba.fenxiao.crossborder.param.*;
 import com.product.api.param.*;
+import org.apache.commons.lang3.StringUtils;
 
 public class ApiRequestFactory {
 
@@ -36,7 +37,15 @@ public class ApiRequestFactory {
     public ProductSearchImageQueryParam createImageQueryParam(ImageQueryParam imageQueryParam) {
         ProductSearchImageQueryParam param = new ProductSearchImageQueryParam();
         ProductSearchImageQueryParamOfferQueryParam offerQueryParam = new ProductSearchImageQueryParamOfferQueryParam();
-        offerQueryParam.setImageId(imageQueryParam.getImageId());
+        // If imageId is not empty,set it to 0. instead search by imageAddress
+        if (StringUtils.isNotEmpty(imageQueryParam.getImageId())) {
+            offerQueryParam.setImageId(imageQueryParam.getImageId());
+        } else {
+            offerQueryParam.setImageId("0");
+        }
+        if (StringUtils.isNotEmpty(imageQueryParam.getImageAddress())) {
+            offerQueryParam.setImageAddress(imageQueryParam.getImageAddress());
+        }
         offerQueryParam.setCountry(imageQueryParam.getCountry());
         offerQueryParam.setBeginPage(imageQueryParam.getBeginPage());
         offerQueryParam.setPageSize(imageQueryParam.getPageSize());
