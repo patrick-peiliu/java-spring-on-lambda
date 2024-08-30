@@ -123,6 +123,8 @@ public class ImageQueryParam {
         return sort;
     }
 
+    public void setSort(String sort) { this.sort = sort;}
+
     public String getPriceStart() {
         return priceStart;
     }

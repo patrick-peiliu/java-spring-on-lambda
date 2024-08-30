@@ -110,16 +110,22 @@ public class ProductSearchService {
         imageQueryParam.setBeginPage(param.getBeginPage());
         imageQueryParam.setPageSize(param.getPageSize());
         imageQueryParam.setCountry(param.getCountry());
+        imageQueryParam.setSort(param.getSort());
         String imageId = uploadResult.getResult();
         // Step 2: Check if the image ID is valid
         if (StringUtils.isNotEmpty(imageId) && !imageId.equals("0")) {
             // Set the image ID to ImageQueryParam
             imageQueryParam.setImageId(imageId);
         } else {
+            ProductSearchImageQueryResult errorResult = new ProductSearchImageQueryResult();
+            ProductSearchImageQueryResultResultModelV result = new ProductSearchImageQueryResultResultModelV();
+            result.setSuccess("false");
+            result.setMessage("Image upload failed. Please upload an image less than 100KB.");
+            errorResult.setResult(result);
+            return errorResult;
             // Throw an exception to inform the upload image fails
-            throw new RuntimeException("Please upload an image less than 100KB");
+//            throw new RuntimeException("Please upload an image less than 100KB");
         }
-
         // Step 3: Query the image
         return imageQuery(imageQueryParam);
     }

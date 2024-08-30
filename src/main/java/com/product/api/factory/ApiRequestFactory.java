@@ -49,6 +49,9 @@ public class ApiRequestFactory {
         offerQueryParam.setCountry(imageQueryParam.getCountry());
         offerQueryParam.setBeginPage(imageQueryParam.getBeginPage());
         offerQueryParam.setPageSize(imageQueryParam.getPageSize());
+        if (StringUtils.isNotEmpty(imageQueryParam.getSort())) {
+            offerQueryParam.setSort(imageQueryParam.getSort());
+        }
         param.setOfferQueryParam(offerQueryParam);
         return param;
     }
