@@ -8,7 +8,6 @@ import com.product.api.param.ProductSearchParam;
 import com.product.api.service.ProductSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class ProductSearchController {
@@ -37,20 +36,9 @@ public class ProductSearchController {
     public ProductSearchQueryProductDetailResult queryProductDetail(@RequestBody ProductDetailParam param) {
         return productSearchService.queryProductDetail(param);
     }
-    /**
-    * 上传图片获取imageId
-    * com.alibaba.fenxiao.crossborder:product.image.upload-1
-     * todo
-    * 上传图片接口为什么没有imageId返回，或者返回0
-    * 请将图片压缩在100k左右，注意base64内容生成后检查下不需要【data:image/jpeg;base64,】这一串，/9后为有效字符
-    */
-    @PostMapping("/upload")
-    public ProductImageUploadResult productImageUpload(@RequestParam("imageFile") MultipartFile imageFile) {
-        return productSearchService.productImageUpload(imageFile);
-    }
 
     /**
-     * 多语言图搜
+     * 多语言图搜(通过1688url或者1688imageId)
      * com.alibaba.fenxiao.crossborder:product.search.imageQuery-1
      */
     @PostMapping("/imageQuery")
@@ -59,11 +47,14 @@ public class ProductSearchController {
     }
 
     /**
-     * 上传图片后图搜
+     * 上传图片获取imageId
+     * com.alibaba.fenxiao.crossborder:product.image.upload-1
+     * 上传图片接口为什么没有imageId返回，或者返回0
+     * 请将图片压缩在100k左右，注意base64内容生成后检查下不需要【data:image/jpeg;base64,】这一串，/9后为有效字符
      */
-    @PostMapping("/imageSearch")
-    public ProductSearchImageQueryResult uploadImageAndQuery(@RequestBody ImageQueryParam param) {
-        return productSearchService.uploadImageAndQuery(param);
+    @PostMapping("/upload")
+    public ProductImageUploadResult uploadImageAndQuery(@RequestBody ImageQueryParam param) {
+        return productSearchService.uploadImageAndQueryImageId(param);
     }
 
     /**
