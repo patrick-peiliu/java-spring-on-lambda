@@ -72,3 +72,13 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::841162678929:policy/Read1688SecretPolicy
+      Policies:
+        - PolicyName: S3UploadPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                Resource: arn:aws:s3:::customizationlogo/*
