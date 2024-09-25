@@ -17,7 +17,9 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,5 +89,13 @@ public class AwsSecretsManagerConfig {
 
     private boolean isLambdaEnvironment() {
         return System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null;
+    }
+
+    @Bean
+    public AmazonS3 amazonS3() {
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(region.toString())
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .build();
     }
 }
