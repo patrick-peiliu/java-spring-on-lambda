@@ -88,4 +88,19 @@ public class ProductSearchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    @PostMapping("/generatePresignedUrl")
+    public ResponseEntity<ApiResponse<String>> generatePresignedUrl(
+            @RequestParam("fileName") String fileName,
+            @RequestParam("fileType") String fileType) {
+        try {
+            String presignedUrl = s3Service.generatePresignedUrl(fileName, fileType);
+            ApiResponse<String> response = new ApiResponse<>(true, "200", null, presignedUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error("Error generating pre-signed URL", e);
+            ApiResponse<String> errorResponse = new ApiResponse<>(false, "500", "Error generating pre-signed URL", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 }
