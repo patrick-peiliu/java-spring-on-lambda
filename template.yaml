@@ -71,7 +71,7 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::841162678929:policy/Read1688SecretPolicy
+        - arn:aws:iam::050752640526:policy/Read1688SecretPolicy
       Policies:
         - PolicyName: S3UploadPolicy
           PolicyDocument:
@@ -81,4 +81,4 @@ Resources:
                 Action:
                   - s3:PutObject
                   - s3:PutObjectAcl
-                Resource: arn:aws:s3:::customizationlogo/*
+                Resource: arn:aws:s3:::customizationlogos/*
