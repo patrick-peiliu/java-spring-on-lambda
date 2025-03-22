@@ -78,14 +78,14 @@
         <dependency>
             <groupId>com.alibaba.platform.shared</groupId>
             <artifactId>ocean.client.java.basic</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.8</version>
 <!--            <scope>system</scope>-->
 <!--            <systemPath>${project.basedir}/src/main/resources/libs/ocean.client.java.biz.jar</systemPath>-->
         </dependency>
         <dependency>
             <groupId>com.alibaba.platform.shared</groupId>
             <artifactId>ocean.client.java.biz.sources</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.8</version>
 <!--            <scope>system</scope>-->
 <!--            <systemPath>${project.basedir}/src/main/resources/libs/ocean.client.java.biz-sources.jar</systemPath>-->
         </dependency>
@@ -260,7 +260,7 @@
                             <file>${project.basedir}/src/main/resources/libs/ocean.client.java.biz.jar</file>
                             <groupId>com.alibaba.platform.shared</groupId>
                             <artifactId>ocean.client.java.basic</artifactId>
-                            <version>1.0.6</version>
+                            <version>1.0.8</version>
                             <packaging>jar</packaging>
                         </configuration>
                     </execution>
@@ -274,7 +274,7 @@
                             <file>${project.basedir}/src/main/resources/libs/ocean.client.java.biz-sources.jar</file>
                             <groupId>com.alibaba.platform.shared</groupId>
                             <artifactId>ocean.client.java.biz.sources</artifactId>
-                            <version>1.0.6</version>
+                            <version>1.0.8</version>
                             <packaging>jar</packaging>
                         </configuration>
                     </execution>
